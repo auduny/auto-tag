@@ -289,7 +289,8 @@ EOF
       --stack-name "$MAIN_STACK_NAME" \
       --region "$MAIN_STACK_AWS_REGION" \
       --capabilities CAPABILITY_NAMED_IAM \
-      --parameters "$CF_PARAMETERS"
+      --parameters "$CF_PARAMETERS" \
+      --tags "$TAGS"
 
     wait-for-stack 'Main' "$MAIN_STACK_NAME" "$MAIN_STACK_AWS_REGION"
 
@@ -322,7 +323,8 @@ EOF
         --region "$REGION" \
         --capabilities CAPABILITY_IAM \
         --parameters \
-            ParameterKey=MainAwsRegion,ParameterValue=$MAIN_STACK_AWS_REGION
+            ParameterKey=MainAwsRegion,ParameterValue=$MAIN_STACK_AWS_REGION \
+        --tags "$TAGS"
 
     elif [ "$ACTION" == "delete" ] ; then
 
@@ -426,7 +428,8 @@ EOF
     --stack-name "$MAIN_STACK_NAME" \
     --region "$MAIN_STACK_AWS_REGION" \
     --capabilities CAPABILITY_NAMED_IAM \
-    --parameters "$CF_PARAMETERS"
+    --parameters "$CF_PARAMETERS" \
+    --tags "$TAGS" 
 
   set -e
   MAIN_STACK_FAILURE=$(<$MAIN_STACK_FAIL_FILE)
@@ -458,7 +461,8 @@ EOF
       --region "$REGION" \
       --capabilities CAPABILITY_IAM \
       --parameters \
-          ParameterKey=MainAwsRegion,ParameterValue=$MAIN_STACK_AWS_REGION
+          ParameterKey=MainAwsRegion,ParameterValue=$MAIN_STACK_AWS_REGION \
+      --tags "$TAGS"
 
     set -e
     COLLECTOR_STACK_FAILURE=$(<$COLLECTOR_STACK_FAIL_FILE)
@@ -639,7 +643,7 @@ Options:
     -s3bu --s3-bucket            The S3 bucket where the code package will be uploaded
     -s3pr --s3-profile           A separate AWS credential profile to upload code packages to the S3 Bucket
     -rv   --release-version      The release version to deploy, e.g. '0.5.2' or 'latest'
-
+    -t    --tags                 Tags to the stack itself
     -lr   --log-retention-days   The number of days to retain the Lambda Function's logs (default: 90)
     -ld   --log-level-debug      Enable the debug logging for the Lambda Function
     -dct  --disable-create-time  Disable the 'CreateTime' tagging for all AWS resources
@@ -670,6 +674,10 @@ while (( "$#" )); do
       ;;
     -s3bu|--s3-bucket)
       export S3_BUCKET=$2
+      shift 2
+      ;;
+    -t|--tags)
+      export TAGS=$2
       shift 2
       ;;
     -rv|--release-version)
