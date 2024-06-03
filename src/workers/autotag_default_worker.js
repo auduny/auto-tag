@@ -158,6 +158,7 @@ class AutotagDefaultWorker {
 
   getCustomTags() {
     const keyword = '$event.';
+    const tagValidRegex = /[^\w\s\.:\+=\@_/ -]+/gi;
     // substitute any word starting with the keyword in the tag value with the actual value from the event
     return this.objectMap(JSON.parse(SETTINGS.CustomTags), tagValue => {
       let newTagValue = tagValue;
@@ -173,6 +174,10 @@ class AutotagDefaultWorker {
         // replace the variable in the tag value with the associated event value
         newTagValue = newTagValue.replace(tagValueVariable, tagValueVariableReplacement);
       });
+      // Remove bad nonvalid values
+      newTagValue = newTagValue.replaceAll(tagValidRegex, '');
+      // Make sure it's less that 250 characters long
+      newTagValue = newTagValue.substring(0, 250);
       // if all of the variable substitutions in the tag value have failed drop the entire tag
       if (tagValueVariables.length > 0 && tagValueVariables.length === (newTagValue.match(/undefined/g) || []).length) {
         return false;

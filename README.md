@@ -135,6 +135,10 @@ export AWS_SECRET_ACCESS_KEY=YYY
 ./deploy_autotag.sh -r us-west-2 -s3bu my-autotag-bucket create
 ```
 
+Adding some tags to the infrastructure.
+
+```bash
+
 Create the infrastructure using a named AWS credentials profile (`--profile`), but with the S3 Bucket operations utilizing a separate AWS credential profile (`--s3-profile`). Use this feature to deploy across multiple accounts using a single S3 bucket.
 
 ```bash
